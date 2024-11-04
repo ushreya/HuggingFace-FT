@@ -1,0 +1,65 @@
+# Data settings
+task: "glue"
+SP: Different_SP
+
+tasks: ["sentiment","quora", "glue"] 
+path_glue: "./database/Glue/train_data.csv"
+path_quora: "./database/Quora/train_data.csv"
+path_sentiment: "./database/Sentiment/train_data.csv"
+
+path_glue_eval: "./database/Glue/eval_data.csv"
+path_quora_eval: "./database/Quora/eval_data.csv"
+path_sentiment_eval: "./database/Sentiment/eval_data.csv"
+
+path_glue_test: "./database/Glue/test_sampled_data.csv"
+path_quora_test: "./database/Quora/test_sampled_data.csv"
+path_sentiment_test: "./database/Sentiment/test_sampled_data.csv"
+
+sample_size: 10000  # Set to null for full dataset
+random_seed: 85
+train_size: 0.9
+eval_size: 0.1
+
+# Model settings
+#base_model_name: "meta-llama/Llama-3.2-3B"
+base_model_name: "meta-llama/Llama-3.2-3B"
+output_dir: ./llama-3.2-fine-tuned-model/single/output_glue_LoRA_Different_SP_new
+max_seq_length: 512
+FT_type: LoRA
+
+# LoRA settings
+lora_alpha: 16
+lora_dropout: 0.05
+lora_r: 16
+
+# Training settings
+num_train_epochs: 1
+per_device_train_batch_size: 8
+per_device_eval_batch_size: 8
+gradient_accumulation_steps: 8
+gradient_checkpointing: true
+optim: "paged_adamw_32bit"
+logging_steps: 5
+learning_rate: 2e-4
+weight_decay: 0.001
+fp16: true
+bf16: false
+max_grad_norm: 0.3
+max_steps: -1
+warmup_ratio: 0.03
+group_by_length: false
+lr_scheduler_type: "cosine"
+report_to: ["tensorboard"]
+evaluation_strategy: "steps"
+eval_steps: 10
+logging_dir: ./logs/glue_LoRA_Different_SP_new
+save_steps: 100  # Save model every 500 steps (adjust as needed)
+save_total_limit: 1  # Keep only the latest 3 checkpoints (adjust as needed)
+
+# Inference settings
+
+run_inference: False
+#sft_model_path: "./llama-3.2-fine-tuned-model/Glue/checkpoint_SFT"
+sft_model_path: "./llama-3B-text-classification-fine-tuned-model/checkpoint-375"
+peft_model_id: "./llama-3B-text-classification-fine-tuned-model/checkpoint-375_Lora"
+inference_batch_size: 64
